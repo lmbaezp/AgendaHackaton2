@@ -16,22 +16,20 @@ public class HelloController {
     private Label label;
 
     private Agenda agenda = new Agenda(5);
+
     @FXML
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");
     }
+
     @FXML
-    protected void onTryButtonClick(){
+    protected void onTryButtonClick() {
         tryText.setText("Esto es una prueba de botón");
     }
 
     @FXML
     protected void onBotonClick() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Acción");
-        alert.setHeaderText(null);
-        alert.setContentText("¡Botón presionado!");
-        alert.showAndWait();
+        mostrarInfo("¡Botón presionado!");
     }
 
     @FXML
@@ -45,14 +43,10 @@ public class HelloController {
         result.ifPresent(input -> {
             String[] datos = input.split(",");
             if (datos.length == 3) {
-                Contacto c = new Contacto(datos[0].trim(), datos[1].trim(),datos[2].trim());
-                if (agenda.addContact(c)) {
-                    mostrarInfo("Contacto agregado: " + c);
-                } else {
-                    mostrarError("No se pudo agregar. Agenda llena o contacto ya existe.");
-                }
+                Contacto c = new Contacto(datos[0].trim(), datos[1].trim(), datos[2].trim());
+                mostrarInfo(agenda.añadirContacto(c));
             } else {
-                mostrarError("Formato incorrecto. Usa: nombre,apellido y telefono");
+                mostrarError("Formato incorrecto. Usa: nombre,apellido,telefono");
             }
         });
     }
@@ -76,7 +70,8 @@ public class HelloController {
         String nombre = pedirDato("Verificar contacto", "Nombre:");
         String apellido = pedirDato("Verificar contacto", "Apellido:");
         if (nombre != null && apellido != null) {
-            mostrarInfo("Existe: " + agenda.exists(nombre, apellido));
+            Contacto c = new Contacto(nombre, apellido, "1234567");
+            mostrarInfo("Existe: " + agenda.existeContacto(c));
         }
     }
 
@@ -90,27 +85,14 @@ public class HelloController {
     }
 
     public void onLista(ActionEvent actionEvent) {
-        if (agenda.getContacts().isEmpty()) {
-            mostrarInfo("No hay contactos.");
-        } else {
-            StringBuilder sb = new StringBuilder("Contactos:\n");
-            for (Contacto c : agenda.getContacts()) {
-                sb.append(c).append("\n");
-            }
-            mostrarInfo(sb.toString());
-        }
+        mostrarInfo(agenda.listarContactos());
     }
 
     public void onBuscar(ActionEvent actionEvent) {
         String nombre = pedirDato("Buscar contacto", "Nombre:");
         String apellido = pedirDato("Buscar contacto", "Apellido:");
         if (nombre != null && apellido != null) {
-            Contacto c = agenda.search(nombre, apellido);
-            if (c != null) {
-                mostrarInfo("Encontrado: " + c);
-            } else {
-                mostrarError("No encontrado.");
-            }
+            mostrarInfo(agenda.buscaContacto(nombre, apellido));
         }
     }
 
@@ -118,11 +100,8 @@ public class HelloController {
         String nombre = pedirDato("Eliminar contacto", "Nombre:");
         String apellido = pedirDato("Eliminar contacto", "Apellido:");
         if (nombre != null && apellido != null) {
-            if (agenda.delete(nombre, apellido)) {
-                mostrarInfo("Eliminado.");
-            } else {
-                mostrarError("No encontrado.");
-            }
+            Contacto c = new Contacto(nombre, apellido, "1234567");
+            mostrarInfo(agenda.eliminarContacto(c));
         }
     }
 
@@ -131,25 +110,15 @@ public class HelloController {
         String apellido = pedirDato("Modificar teléfono", "Apellido:");
         String telefono = pedirDato("Modificar teléfono", "Nuevo número:");
         if (nombre != null && apellido != null && telefono != null) {
-            Contacto c = agenda.search(nombre, apellido);
-            if (c != null) {
-                try {
-                    c.setTelefono(telefono);
-                    mostrarInfo("Teléfono actualizado: " + c);
-                } catch (IllegalArgumentException e) {
-                    mostrarError(e.getMessage());
-                }
-            } else {
-                mostrarError("Contacto no encontrado.");
-            }
+            mostrarInfo(agenda.modificarTelefono(nombre, apellido, telefono));
         }
     }
 
     public void onAgendaLlena(ActionEvent actionEvent) {
-        mostrarInfo("Agenda llena: " + agenda.isFull());
+        mostrarInfo(agenda.agendaLlena());
     }
 
     public void onEspacio(ActionEvent actionEvent) {
-        mostrarInfo("Espacio disponible: " + agenda.freeSpace());
+        mostrarInfo(agenda.espaciosLibres());
     }
 }

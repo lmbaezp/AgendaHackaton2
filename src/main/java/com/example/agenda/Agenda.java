@@ -16,37 +16,70 @@ public class Agenda {
         this(10); // tamaño por defecto
     }
 
-    public boolean addContact(Contacto contact) {
-        if (contacts.size() >= maxSize || contacts.contains(contact)) {
-            return false;
+    public String añadirContacto(Contacto c) {
+        if (c.getNombre().isEmpty() || c.getApellido().isEmpty()) {
+            return "Nombre o apellido no pueden estar vacíos.";
         }
-        return contacts.add(contact);
+        if (contacts.size() >= maxSize) {
+            return "La agenda está llena.";
+        }
+        if (existeContacto(c)) {
+            return "El contacto ya existe.";
+        }
+        contacts.add(c);
+        return "Contacto agregado: " + c;
     }
 
-    public List<Contacto> getContacts() {
-        return contacts;
-    }
-    public boolean exists(String nombre, String apellido) {
-        return contacts.contains(new Contacto(nombre, apellido, "1234567"));
-        // el teléfono aquí es irrelevante, equals() solo compara nombre y apellido
+    public boolean existeContacto(Contacto c) {
+        return contacts.contains(c);
     }
 
-    public Contacto search(String nombre, String apellido) {
+    public String listarContactos() {
+        if (contacts.isEmpty()) {
+            return "No hay contactos.";
+        }
         return contacts.stream()
-                .filter(c -> c.getNombre().equalsIgnoreCase(nombre) && c.getApellido().equalsIgnoreCase(apellido))
-                .findFirst()
-                .orElse(null);
+                .sorted((a, b) -> (a.getNombre() + " " + a.getApellido())
+                        .compareToIgnoreCase(b.getNombre() + " " + b.getApellido()))
+                .map(Contacto::toString)
+                .reduce("", (a, b) -> a + b + "\n");
     }
 
-    public boolean delete(String nombre, String apellido) {
-        return contacts.removeIf(c -> c.getNombre().equalsIgnoreCase(nombre) && c.getApellido().equalsIgnoreCase(apellido));
+    public String buscaContacto(String nombre, String apellido) {
+        for (Contacto c : contacts) {
+            if (c.getNombre().equalsIgnoreCase(nombre) && c.getApellido().equalsIgnoreCase(apellido)) {
+                return "Teléfono de " + nombre + " " + apellido + ": " + c.getTelefono();
+            }
+        }
+        return "Contacto no encontrado.";
     }
 
-    public boolean isFull() {
-        return contacts.size() >= maxSize;
+    public String eliminarContacto(Contacto c) {
+        if (contacts.remove(c)) {
+            return "Eliminado correctamente.";
+        }
+        return "El contacto no existe.";
     }
 
-    public int freeSpace() {
-        return maxSize - contacts.size();
+    public String modificarTelefono(String nombre, String apellido, String nuevoTelefono) {
+        for (Contacto c : contacts) {
+            if (c.getNombre().equalsIgnoreCase(nombre) && c.getApellido().equalsIgnoreCase(apellido)) {
+                try {
+                    c.setTelefono(nuevoTelefono);
+                    return "Teléfono actualizado: " + c;
+                } catch (IllegalArgumentException e) {
+                    return e.getMessage();
+                }
+            }
+        }
+        return "Contacto no encontrado.";
+    }
+
+    public String agendaLlena() {
+        return contacts.size() >= maxSize ? "La agenda está llena." : "Aún hay espacio.";
+    }
+
+    public String espaciosLibres() {
+        return "Espacios disponibles: " + (maxSize - contacts.size());
     }
 }
