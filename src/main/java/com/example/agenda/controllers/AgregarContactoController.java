@@ -1,4 +1,4 @@
-package com.example.agenda;
+package com.example.agenda.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

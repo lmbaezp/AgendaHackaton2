@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="TOP_LEFT" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.agenda.HelloController" spacing="10">
+      fx:controller="com.example.agenda.controllers.HelloController" spacing="10">
 
     <!-- Menú principal -->
     <MenuBar>
