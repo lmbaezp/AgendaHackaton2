@@ -3,10 +3,10 @@ package com.example.agenda;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -51,21 +51,56 @@ public void initialize() {
 }
     @FXML
     protected void onNuevo() {
-        TextInputDialog dialog = new TextInputDialog();
+        Dialog<Contacto> dialog = new Dialog<>();
         dialog.setTitle("Nuevo contacto");
-        dialog.setHeaderText("Añadir contacto");
-        dialog.setContentText("Nombre, apellido y teléfono (separados por coma):");
+        dialog.setHeaderText("Añadir un nuevo contacto");
 
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(input -> {
-            String[] datos = input.split(",");
-            if (datos.length == 3) {
-                Contacto c = new Contacto(datos[0].trim(), datos[1].trim(), datos[2].trim());
-                mostrarInfo(agenda.añadirContacto(c));
-            } else {
-                mostrarError("Formato incorrecto. Usa: nombre,apellido,telefono");
+        ButtonType guardarBtn = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(guardarBtn, ButtonType.CANCEL);
+
+        // Crear los campos del formulario
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField nombreField = new TextField();
+        nombreField.setPromptText("Nombre");
+
+        TextField apellidoField = new TextField();
+        apellidoField.setPromptText("Apellido");
+
+        TextField telefonoField = new TextField();
+        telefonoField.setPromptText("Teléfono");
+
+        grid.add(new Label("Nombre:"), 0, 0);
+        grid.add(nombreField, 1, 0);
+        grid.add(new Label("Apellido:"), 0, 1);
+        grid.add(apellidoField, 1, 1);
+        grid.add(new Label("Teléfono:"), 0, 2);
+        grid.add(telefonoField, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Convertir resultado en un Contacto
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == guardarBtn) {
+                try {
+                    return new Contacto(
+                            nombreField.getText(),
+                            apellidoField.getText(),
+                            telefonoField.getText()
+                    );
+                } catch (IllegalArgumentException e) {
+                    mostrarError(e.getMessage());
+                    return null;
+                }
             }
+            return null;
         });
+
+        Optional<Contacto> result = dialog.showAndWait();
+        result.ifPresent(c -> mostrarInfo(agenda.añadirContacto(c)));
     }
 
     private void mostrarError(String msg) {
@@ -88,7 +123,7 @@ public void initialize() {
         String apellido = pedirDato("Verificar contacto", "Apellido:");
         if (nombre != null && apellido != null) {
             Contacto c = new Contacto(nombre, apellido, "1234567");
-            mostrarInfo("Existe: " + agenda.existeContacto(c));
+            mostrarInfo("Existe: " + (agenda.existeContacto(c) ? "Sí" : "No"));
         }
     }
 
@@ -138,6 +173,5 @@ public void initialize() {
     public void onEspacio(ActionEvent actionEvent) {
         mostrarInfo(agenda.espaciosLibres());
     }
-
 
 }
