@@ -1,11 +1,19 @@
 package com.example.agenda;
 
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
-
+import javafx.scene.layout.BorderPane;
+import javafx.util.Duration;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
 import java.util.Optional;
 
 public class HelloController {
@@ -14,24 +22,33 @@ public class HelloController {
     @FXML
     private Label tryText;
     private Label label;
+    @FXML
+    private BorderPane rootPane;
 
     private Agenda agenda = new Agenda(5);
 
-//    @FXML
-//    protected void onHelloButtonClick() {
-//        welcomeText.setText("Welcome to JavaFX Application!");
-//    }
-//
-//    @FXML
-//    protected void onTryButtonClick() {
-//        tryText.setText("Esto es una prueba de botón");
-//    }
-//
-//    @FXML
-//    protected void onBotonClick() {
-//        mostrarInfo("¡Botón presionado!");
-//    }
 
+@FXML
+public void initialize() {
+    FadeTransition fade = new FadeTransition(Duration.seconds(1.5), rootPane);
+    fade.setFromValue(0);
+    fade.setToValue(1);
+    fade.play();
+    Timeline timeline = new Timeline(
+            new KeyFrame(Duration.seconds(0),
+                    new KeyValue(rootPane.backgroundProperty(),
+                            new Background(new BackgroundFill(Color.web("#e3f2fd"), null, null)))),
+            new KeyFrame(Duration.seconds(2),
+                    new KeyValue(rootPane.backgroundProperty(),
+                            new Background(new BackgroundFill(Color.web("#bbdefb"), null, null)))),
+            new KeyFrame(Duration.seconds(4),
+                    new KeyValue(rootPane.backgroundProperty(),
+                            new Background(new BackgroundFill(Color.web("#e3f2fd"), null, null))))
+    );
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    timeline.setAutoReverse(true);
+    timeline.play();
+}
     @FXML
     protected void onNuevo() {
         TextInputDialog dialog = new TextInputDialog();
@@ -121,4 +138,6 @@ public class HelloController {
     public void onEspacio(ActionEvent actionEvent) {
         mostrarInfo(agenda.espaciosLibres());
     }
+
+
 }
