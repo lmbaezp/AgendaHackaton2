@@ -27,6 +27,7 @@ public class Contacto {
         this.telefono = nuevo;
     }
 
+    //Dos contactos se consideran iguales si tienen el mismo nombre y apellido
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
