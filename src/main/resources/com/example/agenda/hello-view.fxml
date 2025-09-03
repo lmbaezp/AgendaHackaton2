@@ -5,45 +5,53 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<!-- Layout principal con BorderPane -->
 <BorderPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.agenda.HelloController">
 
-    <!-- Menú superior -->
+    <!-- Menú superior con opciones de la agenda -->
     <top>
         <MenuBar>
             <Menu text="Agenda">
+                <!-- Opciones de gestión de contactos -->
                 <MenuItem text="➕ Añadir Contacto" onAction="#onNuevo"/>
                 <MenuItem text="🔍 Verificar Contacto" onAction="#onVerificar"/>
                 <MenuItem text="📋 Lista Contactos" onAction="#onLista"/>
                 <MenuItem text="🔎 Buscar Contacto" onAction="#onBuscar"/>
                 <MenuItem text="🗑 Eliminar Contacto" onAction="#onEliminar"/>
                 <MenuItem text="✏ Modificar Teléfono" onAction="#onTelefono"/>
+
+                <!-- Separador visual -->
                 <SeparatorMenuItem/>
+
+                <!-- Opciones de estado de la agenda -->
                 <MenuItem text="📦 Agenda llena" onAction="#onAgendaLlena"/>
                 <MenuItem text="📂 Espacio Disponible" onAction="#onEspacio"/>
+
+                <!-- Separador visual -->
                 <SeparatorMenuItem/>
+
+                <!-- Opción para salir -->
                 <MenuItem text="❌ Salir" onAction="#onSalir"/>
             </Menu>
         </MenuBar>
     </top>
 
-    <!-- Contenido central -->
+    <!-- Contenido central con títulos y mensajes -->
     <center>
         <VBox alignment="CENTER" spacing="15">
+            <!-- Título principal -->
             <Label text="📒 Mi Agenda de Contactos"
                    styleClass="titulo-principal"/>
+
+            <!-- Texto de bienvenida -->
             <Label fx:id="welcomeText" text="Bienvenido a la Agenda"
                    styleClass="texto-secundario"/>
+
+            <!-- Texto dinámico que se actualizará desde el controlador -->
             <Label fx:id="tryText" text=""
                    styleClass="texto-normal"/>
         </VBox>
     </center>
 
-<!--    &lt;!&ndash; Barra inferior &ndash;&gt;-->
-<!--    <bottom>-->
-<!--        <HBox alignment="CENTER" spacing="10" padding="10">-->
-<!--            <Button text="Prueba Botón" onAction="#onBotonClick"-->
-<!--                    styleClass="boton-primario"/>-->
-<!--        </HBox>-->
-<!--    </bottom>-->
 </BorderPane>
