@@ -17,20 +17,20 @@ public class HelloController {
 
     private Agenda agenda = new Agenda(5);
 
-    @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
-    }
-
-    @FXML
-    protected void onTryButtonClick() {
-        tryText.setText("Esto es una prueba de botón");
-    }
-
-    @FXML
-    protected void onBotonClick() {
-        mostrarInfo("¡Botón presionado!");
-    }
+//    @FXML
+//    protected void onHelloButtonClick() {
+//        welcomeText.setText("Welcome to JavaFX Application!");
+//    }
+//
+//    @FXML
+//    protected void onTryButtonClick() {
+//        tryText.setText("Esto es una prueba de botón");
+//    }
+//
+//    @FXML
+//    protected void onBotonClick() {
+//        mostrarInfo("¡Botón presionado!");
+//    }
 
     @FXML
     protected void onNuevo() {

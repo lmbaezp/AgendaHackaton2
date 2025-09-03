@@ -1,0 +1,27 @@
+.titulo-principal {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E86C1;
+}
+
+.texto-secundario {
+    -fx-font-size: 16px;
+    -fx-text-fill: #117864;
+}
+
+.texto-normal {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.boton-primario {
+    -fx-background-color: #2E86C1;
+    -fx-text-fill: white;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+}
+
+.boton-primario:hover {
+    -fx-background-color: #1B4F72;
+}
