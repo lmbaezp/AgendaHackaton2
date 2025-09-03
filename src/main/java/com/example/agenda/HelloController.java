@@ -25,32 +25,37 @@ public class HelloController {
     @FXML
     private BorderPane rootPane;
 
+    // Agenda con máximo 5 contactos
     private Agenda agenda = new Agenda(5);
 
+    @FXML
+    public void initialize() {
+        // Efecto de desvanecimiento al iniciar
+        FadeTransition fade = new FadeTransition(Duration.seconds(1.5), rootPane);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
 
-@FXML
-public void initialize() {
-    FadeTransition fade = new FadeTransition(Duration.seconds(1.5), rootPane);
-    fade.setFromValue(0);
-    fade.setToValue(1);
-    fade.play();
-    Timeline timeline = new Timeline(
-            new KeyFrame(Duration.seconds(0),
-                    new KeyValue(rootPane.backgroundProperty(),
-                            new Background(new BackgroundFill(Color.web("#e3f2fd"), null, null)))),
-            new KeyFrame(Duration.seconds(2),
-                    new KeyValue(rootPane.backgroundProperty(),
-                            new Background(new BackgroundFill(Color.web("#bbdefb"), null, null)))),
-            new KeyFrame(Duration.seconds(4),
-                    new KeyValue(rootPane.backgroundProperty(),
-                            new Background(new BackgroundFill(Color.web("#e3f2fd"), null, null))))
-    );
-    timeline.setCycleCount(Timeline.INDEFINITE);
-    timeline.setAutoReverse(true);
-    timeline.play();
-}
+        // Cambio de color de fondo en bucle
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(0),
+                        new KeyValue(rootPane.backgroundProperty(),
+                                new Background(new BackgroundFill(Color.web("#e3f2fd"), null, null)))),
+                new KeyFrame(Duration.seconds(2),
+                        new KeyValue(rootPane.backgroundProperty(),
+                                new Background(new BackgroundFill(Color.web("#bbdefb"), null, null)))),
+                new KeyFrame(Duration.seconds(4),
+                        new KeyValue(rootPane.backgroundProperty(),
+                                new Background(new BackgroundFill(Color.web("#e3f2fd"), null, null))))
+        );
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.setAutoReverse(true);
+        timeline.play();
+    }
+
     @FXML
     protected void onNuevo() {
+        // Diálogo tipo formulario para crear un nuevo contacto
         Dialog<Contacto> dialog = new Dialog<>();
         dialog.setTitle("Nuevo contacto");
         dialog.setHeaderText("Añadir un nuevo contacto");
@@ -58,7 +63,7 @@ public void initialize() {
         ButtonType guardarBtn = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(guardarBtn, ButtonType.CANCEL);
 
-        // Crear los campos del formulario
+        // Formulario con campos de texto
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -82,7 +87,7 @@ public void initialize() {
 
         dialog.getDialogPane().setContent(grid);
 
-        // Convertir resultado en un Contacto
+        // Convierte la entrada en un objeto Contacto
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == guardarBtn) {
                 try {
@@ -99,15 +104,18 @@ public void initialize() {
             return null;
         });
 
+        // Si se guarda, intenta añadirlo a la agenda
         Optional<Contacto> result = dialog.showAndWait();
         result.ifPresent(c -> mostrarInfo(agenda.añadirContacto(c)));
     }
 
+    // Muestra alerta de error
     private void mostrarError(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR, msg);
         alert.showAndWait();
     }
 
+    // Muestra alerta informativa
     private void mostrarInfo(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, msg);
         alert.showAndWait();
@@ -115,10 +123,11 @@ public void initialize() {
 
     @FXML
     protected void onSalir() {
-        System.exit(0);
+        System.exit(0); // Cierra la aplicación
     }
 
     public void onVerificar(ActionEvent actionEvent) {
+        // Verifica si un contacto existe
         String nombre = pedirDato("Verificar contacto", "Nombre:");
         String apellido = pedirDato("Verificar contacto", "Apellido:");
         if (nombre != null && apellido != null) {
@@ -127,6 +136,7 @@ public void initialize() {
         }
     }
 
+    // Pide un dato mediante un cuadro de texto
     private String pedirDato(String titulo, String mensaje) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle(titulo);
@@ -136,10 +146,12 @@ public void initialize() {
         return result.orElse(null);
     }
 
+    // Lista todos los contactos
     public void onLista(ActionEvent actionEvent) {
         mostrarInfo(agenda.listarContactos());
     }
 
+    // Busca un contacto por nombre y apellido
     public void onBuscar(ActionEvent actionEvent) {
         String nombre = pedirDato("Buscar contacto", "Nombre:");
         String apellido = pedirDato("Buscar contacto", "Apellido:");
@@ -148,6 +160,7 @@ public void initialize() {
         }
     }
 
+    // Elimina un contacto
     public void onEliminar(ActionEvent actionEvent) {
         String nombre = pedirDato("Eliminar contacto", "Nombre:");
         String apellido = pedirDato("Eliminar contacto", "Apellido:");
@@ -157,6 +170,7 @@ public void initialize() {
         }
     }
 
+    // Modifica el teléfono de un contacto
     public void onTelefono(ActionEvent actionEvent) {
         String nombre = pedirDato("Modificar teléfono", "Nombre:");
         String apellido = pedirDato("Modificar teléfono", "Apellido:");
@@ -166,10 +180,12 @@ public void initialize() {
         }
     }
 
+    // Verifica si la agenda está llena
     public void onAgendaLlena(ActionEvent actionEvent) {
         mostrarInfo(agenda.agendaLlena());
     }
 
+    // Muestra cuántos espacios quedan
     public void onEspacio(ActionEvent actionEvent) {
         mostrarInfo(agenda.espaciosLibres());
     }
